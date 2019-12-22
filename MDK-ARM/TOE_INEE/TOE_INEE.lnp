@@ -10,6 +10,8 @@
 "toe_inee\stmgood.o"
 "toe_inee\user_lib.o"
 "toe_inee\minorthread.o"
+"toe_inee\logic_handle_task.o"
+"toe_inee\pid_handle_task.o"
 "toe_inee\main.o"
 "toe_inee\gpio.o"
 "toe_inee\can.o"

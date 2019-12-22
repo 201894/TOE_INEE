@@ -29,6 +29,8 @@
 #include "bsp_can.h"
 #include "bsp_uart.h"
 #include "minorThread.h"
+#include "logic_handle_task.h"
+#include "pid.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -138,7 +140,6 @@ void MX_FREERTOS_Init(void) {
   * @param  argument: Not used 
   * @retval None
   */
-extern uint16_t uartCnt;
 /* USER CODE END Header_debugThread */
 void debugThread(void const * argument)
 {
@@ -147,14 +148,37 @@ void debugThread(void const * argument)
   for(;;)
   {
 
-    #if 1
-			printf("# MOTO ECD REVENLENT #: \r\n");				
-			printf("MotoData[LeftFlip] = %d \r\n",MotoData[LeftFlip].ecd);		
-			printf("MotoData[RightFlip] = %d \r\n",MotoData[RightFlip].ecd);		
-			printf("MotoData[MidSlip] = %d \r\n",MotoData[MidSlip].ecd);			
-			printf("uartCnt = %d \r\n",uartCnt);			
-		#endif	
-    osDelay(500);
+#if 0
+		printf("##FPS REVENLENT : ##\r\n");		
+		printf("fps[LeftFlip] = %d\r\n",r_fps[LeftFlip].fps);
+		printf("fps[RightFlip] = %d\r\n",r_fps[RightFlip].fps);	
+		printf("fps[MasterID] = %d\r\n",r_fps[MasterID].fps);
+		printf("fps[MidSlip] = %d\r\n",r_fps[MidSlip].fps);    							
+#endif		
+#if 0
+		printf("# MOTO ECD REVENLENT #: \r\n");				
+		//			printf("MotoData[LeftFlip] = %d \r\n",MotoData[LeftFlip].ecd);		
+		//			printf("MotoData[RightFlip] = %d \r\n",MotoData[RightFlip].ecd);		
+		printf("MotoData[MidSlip] = %d \r\n",MotoData[MidSlip].ecd);						
+#endif	
+#if 1
+		printf("# LOGIC DATA REVENLENT #: \r\n");				
+		//			printf("MotoData[LeftFlip] = %d \r\n",MotoData[LeftFlip].ecd);		
+		//			printf("MotoData[RightFlip] = %d \r\n",MotoData[RightFlip].ecd);		
+		printf("Raw_mode = %d \r\n",logic_data.raw_mode);	
+		printf("moto[Slip].target = %.3f\r\n",moto_ctrl[Slip].target);			
+#endif			
+#if 1
+		printf("SLIP PID REVENLENT : ##\r\n");				
+		printf("TargetAngle = %.2f\r\n",moto_ctrl[Slip].target);	
+		printf("CurrentAngle = %.2f\r\n",MotoData[MidSlip].total_angle);	
+		printf("AngleError = #%.2f\r\n",pid_out[Slip].errNow);	
+		printf("FirstCtrOut = %.2f\r\n",pid_out[Slip].ctrOut);				
+		printf("CurrentSpd = %df\r\n",MotoData[MidSlip].speed_rpm);	 // MotoData[RightUpLift].speed_rpm
+		printf("SpdError = %.2f\r\n",pid_in[MidSlip].errNow);			
+		printf("FinalCtrOut = %d\r\n",(int16_t)pid_in[MidSlip].ctrOut);					
+#endif				
+    osDelay(200);
   }
   /* USER CODE END debugThread */
 }

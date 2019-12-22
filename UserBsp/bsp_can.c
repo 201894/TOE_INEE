@@ -10,12 +10,14 @@
 #include "bsp_can.h"
 #include "cmsis_os.h"
 #include "minorThread.h"
+#include "logic_handle_task.h"
 #include "can.h"
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
+
 #define ENCODER_ANGLE_RATIO               (8192.0f/360.0f)
-#define REDUCTION_RATIO                   (36/1)
+#define REDUCTION_RATIO                   (19/1)
 #define pi                                 			3.1415926.f
 
 CanTxMsgTypeDef  				can1_tx;
@@ -49,14 +51,26 @@ void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* hcan)
        case CAN_SLIP_M1_ID:{
 				encoder_data_handle(&MotoData[MidSlip],can1_rx.Data);		
 				g_fps[MidSlip].cnt ++;					 
-			} break;			 
+			} break;			
+       case CAN_MASTER_M1_ID:{
+				 
+				logic_data.raw_mode = can1_rx.Data[0];
+				data4bytes.c[0] = can1_rx.Data[1];
+				data4bytes.c[1] = can1_rx.Data[2];
+				data4bytes.c[2] = can1_rx.Data[3];
+				data4bytes.c[3] = can1_rx.Data[4];
+				moto_ctrl[Slip].target = data4bytes.f;
+				g_fps[MasterID].cnt ++;						 
+			} break;	
+       case CAN_MASTER_M2_ID:{
+			 
+			} break;						 
 	   default:
 	    {}
 		break;
 	 }
 	__HAL_CAN_ENABLE_IT(&hcan1,CAN_IT_FMP0);
  }
-
 }
 
 /**
@@ -72,15 +86,14 @@ void encoder_data_handle(moto_param* ptr,uint8_t RxData[8])
 	 {
 		 ptr->init_flag = 1;
 		 ptr->round_cnt = 0;		 
-	   ptr->offset_ecd = (uint16_t)(RxData[0] << 8 | RxData[1]);  
-	   ptr->offset_angle = ptr->offset_ecd/ENCODER_ANGLE_RATIO;  		 
+	   ptr->offset_ecd = (uint16_t)(RxData[0] << 8 | RxData[1]);  	 
 	 }
 	 else
 	 {
 		 ptr->ecd      = (uint16_t)(RxData[0] << 8 | RxData[1]);  
 		 if (ptr->ecd - ptr->last_ecd > 4096)
 		 {
-			 ptr->round_cnt--;
+			 ptr->round_cnt --;
 		 }
 		 else if (ptr->ecd - ptr->last_ecd < -4096)
 		 {
@@ -88,7 +101,7 @@ void encoder_data_handle(moto_param* ptr,uint8_t RxData[8])
 		 }
 		 ptr->total_ecd = ptr->round_cnt * 8192 + ptr->ecd - ptr->offset_ecd;
 		 /* total angle, unit is degree */
-		 ptr->total_angle = ptr->total_ecd / ENCODER_ANGLE_RATIO; 
+		 ptr->total_angle = (ptr->total_ecd - ptr->offset_ecd) / (ENCODER_ANGLE_RATIO * REDUCTION_RATIO); 
 		 ptr->speed_rpm     = (int16_t)(RxData[2] << 8 | RxData[3]);
 		 ptr->current = (int16_t)(RxData[2] << 8 | RxData[3]);
 	 }
@@ -143,32 +156,33 @@ void send_can_ms(uint32_t id,int16_t gy,int16_t gz,float angle)
 void CanFilter_Init(CAN_HandleTypeDef* hcan)
 {
   CAN_FilterConfTypeDef canfilter;
-  
-  //create memory to save the message, if not will raise error
-  
-  canfilter.FilterMode = CAN_FILTERMODE_IDMASK;
-  canfilter.FilterScale = CAN_FILTERSCALE_32BIT;
-  
+ 	hcan->pTxMsg = &can1_tx;
+	hcan->pRxMsg = &can1_rx;    
   //filtrate any ID you want here
-  canfilter.FilterIdHigh = 0x0000;
-  canfilter.FilterIdLow = 0x0000;
-  canfilter.FilterMaskIdHigh = 0x0000;
-  canfilter.FilterMaskIdLow = 0x0000;
-  
-  canfilter.FilterFIFOAssignment = 0;
+  canfilter.FilterFIFOAssignment = CAN_FILTER_FIFO0;
   canfilter.FilterActivation = ENABLE;
-  canfilter.BankNumber = 14;
-  
-  //use different filter for can1&can2
-    canfilter.FilterNumber = 0;
-    hcan->pTxMsg = &can1_tx;
-    hcan->pRxMsg = &can1_rx;
-
-    HAL_CAN_ConfigFilter(hcan, &canfilter);
-
+  canfilter.FilterMode = CAN_FILTERMODE_IDLIST;
+  canfilter.FilterScale = CAN_FILTERSCALE_16BIT;	
+	canfilter.FilterNumber = 0U;
+  canfilter.FilterIdHigh = ((uint16_t)CAN_FLIP_M1_ID)<<5 ;
+  canfilter.FilterIdLow =  ((uint16_t)CAN_FLIP_M2_ID)<<5 ;
+  canfilter.FilterMaskIdHigh =  ((uint16_t)CAN_SLIP_M1_ID)<<5 ;
+  canfilter.FilterMaskIdLow =  ((uint16_t)CAN_MASTER_M1_ID)<<5 ;
+	HAL_CAN_ConfigFilter(hcan, &canfilter);
+	
+  canfilter.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+  canfilter.FilterActivation = ENABLE;
+  canfilter.FilterMode = CAN_FILTERMODE_IDLIST;
+  canfilter.FilterScale = CAN_FILTERSCALE_16BIT;	
+	canfilter.FilterNumber = 1U;
+  canfilter.FilterIdHigh = ((uint16_t)CAN_MASTER_M2_ID)<<5 ;
+  canfilter.FilterIdLow =  ((uint16_t)0)<<5 ;
+  canfilter.FilterMaskIdHigh =  ((uint16_t)0)<<5 ;
+  canfilter.FilterMaskIdLow =  ((uint16_t)0)<<5 ;
+	HAL_CAN_ConfigFilter(hcan, &canfilter);	
 }
 
-void can_receive_start(void)
+void CAN_InitArgument(void)
 {
 			CanFilter_Init(&hcan1);
 			__HAL_CAN_ENABLE_IT(&hcan1,CAN_IT_FMP0);

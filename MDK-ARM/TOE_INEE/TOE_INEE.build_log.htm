@@ -22,18 +22,21 @@ Dialog DLL:      TCM.DLL V1.14.4.0
  
 <h2>Project:</h2>
 E:\RM2020\RM_ENGINEER\TOE_INEE\MDK-ARM\TOE_INEE.uvprojx
-Project File Date:  12/19/2019
+Project File Date:  12/21/2019
 
 <h2>Output:</h2>
 Build target 'TOE_INEE'
-compiling bsp_io.c...
-..\UserBsp\bsp_io.h(30): warning:  #1295-D: Deprecated declaration led_init - give arg types
-  void led_init();
-..\UserBsp\bsp_io.c: 1 warning, 0 errors
+compiling bsp_can.c...
+..\MainTasks\minorThread.h(94): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\MainTasks\logic_handle_task.h(63): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\UserBsp\bsp_can.c: 2 warnings, 0 errors
 linking...
-Program Size: Code=18608 RO-data=552 RW-data=188 ZI-data=7740  
-FromELF: creating hex file...
-"TOE_INEE\TOE_INEE.axf" - 0 Error(s), 1 Warning(s).
+TOE_INEE\TOE_INEE.axf: Error: L6218E: Undefined symbol can_receive_start (referred from main.o).
+Not enough information to list image symbols.
+Finished: 1 information, 0 warning and 1 error messages.
+"TOE_INEE\TOE_INEE.axf" - 1 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -52,6 +55,7 @@ Package Vendor: ARM
 
    * Component: ARM::CMSIS:CORE:3.40.0
       Source file:   CMSIS\UserCodeTemplates\ARM\ITM_Retarget.c
+Target not created.
 </pre>
 </body>
 </html>

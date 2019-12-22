@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F105xC</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc; ../Drivers/STM32F1xx_HAL_Driver/Inc; ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy; ../Drivers/CMSIS/Device/ST/STM32F1xx/Include; ../Middlewares/Third_Party/FreeRTOS/Source/include; ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS; ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3; ..\UserBsp; ..\RmLib; ../Drivers/CMSIS/Include; ..\MainTasks</IncludePath>
+              <IncludePath>../Inc;    ../Drivers/STM32F1xx_HAL_Driver/Inc;    ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;    ../Drivers/CMSIS/Device/ST/STM32F1xx/Include;    ../Middlewares/Third_Party/FreeRTOS/Source/include;    ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS;    ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM3;    ..\UserBsp;    ..\RmLib;    ../Drivers/CMSIS/Include;    ..\MainTasks</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -477,6 +477,16 @@
               <FileName>minorThread.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\MainTasks\minorThread.c</FilePath>
+            </File>
+            <File>
+              <FileName>logic_handle_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MainTasks\logic_handle_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>pid_handle_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MainTasks\pid_handle_task.c</FilePath>
             </File>
           </Files>
         </Group>

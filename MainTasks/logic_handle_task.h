@@ -9,7 +9,7 @@
 #ifndef  __LOGIC_HANDLE_TASK_H__
 #define __LOGIC_HANDLE_TASK_H__
 
-#include "stm32f4xx_hal.h"
+#include "stm32f1xx_hal.h"
 
 typedef enum
 {

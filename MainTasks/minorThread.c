@@ -21,6 +21,7 @@ UBaseType_t detect_stack_surplus;
 /* detect task global parameter */
 global_err_t g_err;
 global_fps_t g_fps[MaxId];
+global_fps_t r_fps[MaxId];
 /* detect task static parameter */
 static offline_dev_t offline_dev[MODE_CTRL_OFFLINE + 1];
 /**
@@ -56,15 +57,7 @@ void detector_init(void)
 		}
 	 }
 		
-	  /* initialize device error detect priority and enable byte */
-	  
-	  g_err.list[CAN_UPLIFT_LEFT_OFFLINE].err_exist = 0;
-	  g_err.list[CAN_UPLIFT_LEFT_OFFLINE].pri       = 6;  //max priority
-	  g_err.list[CAN_UPLIFT_LEFT_OFFLINE].enable    = 1;
-
-	  g_err.list[CAN_UPLIFT_RIGHT_OFFLINE].err_exist  = 0;
-	  g_err.list[CAN_UPLIFT_RIGHT_OFFLINE].pri        = 5;
-	  g_err.list[CAN_UPLIFT_RIGHT_OFFLINE].enable     = 1;
+	  /* initialize device error detect priority and enable byte */	  	
 	  
 	  g_err.list[CAN_FLIP_LEFT_OFFLINE].err_exist  = 0;
 	  g_err.list[CAN_FLIP_LEFT_OFFLINE].pri        = 4;
@@ -132,13 +125,7 @@ void minorThread(void const *argu)
       LED_G_ON;
     }
 
-    module_fps_detect();
-    #if 1
-			printf("##FPS REVENLENT : ##\r\n");				
-			printf("FPS[LeftFlip] = %d \r\n",g_fps[0].fps);
-			printf("FPS[RightFlip] = %d \r\n",g_fps[1].fps);
-			printf("FPS[MidSlip] = %d \r\n",g_fps[2].fps);	
-		#endif				
+    module_fps_detect();	
     module_fps_clear();
    // detect_stack_surplus = uxTaskGetStackHighWaterMark(NULL);    
     osDelayUntil(&detect_wake_time, DETECT_TASK_PERIOD);
@@ -180,6 +167,7 @@ static void module_offline_detect(void)
 
 static void module_offline_callback(void)
 {
+	
 }
 uint8_t canFlag=0;
 static void module_fps_detect(void)
@@ -196,14 +184,10 @@ static void module_fps_clear(void)
 {
 	  for (int i = 0; i < MaxId; i++)
 		{
-			memset(&g_fps[i], 0, sizeof(global_fps_t));		
+			memcpy(&r_fps[i], &g_fps[i], sizeof(global_fps_t));								
+			memset(&g_fps[i], 0, sizeof(global_fps_t));					
 		}
 }
-
-
-
-
-
 
 
 

@@ -82,6 +82,7 @@ typedef struct
 } global_fps_t;
 
 extern global_err_t g_err;
+extern global_fps_t r_fps[MaxId];
 extern global_fps_t g_fps[MaxId];
 void detector_init(void);
 void err_detector_hook(int err_id);

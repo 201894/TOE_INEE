@@ -30,7 +30,7 @@ toe_inee\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio_ex.h
 toe_inee\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h
 toe_inee\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma_ex.h
 toe_inee\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_can.h
-toe_inee\freertos.o: ..\RmLib\stm32f1xx_hal_can_ex.h
+toe_inee\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_can_ex.h
 toe_inee\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cortex.h
 toe_inee\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h
 toe_inee\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h
@@ -45,3 +45,5 @@ toe_inee\freertos.o: ..\UserBsp\bsp_can.h
 toe_inee\freertos.o: ..\UserBsp\bsp_uart.h
 toe_inee\freertos.o: ../Inc/usart.h
 toe_inee\freertos.o: ..\MainTasks\minorThread.h
+toe_inee\freertos.o: ..\MainTasks\logic_handle_task.h
+toe_inee\freertos.o: ..\RmLib\pid.h

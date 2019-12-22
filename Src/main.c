@@ -98,7 +98,7 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
   can_receive_start();
-	uart3_device_init();
+	USART_InitArgument();
 	HAL_Delay(500);
   /* USER CODE END 2 */
 
